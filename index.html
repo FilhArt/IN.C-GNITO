@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IN.CÓGNITO</title>
+    <link rel="icon" type="image/png" href="IMG/IN.COGNITO LOGO.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="terminal">
+    <div class="header">
+        <div class="header-left">
+            <span class="title">IN.CÓGNITO</span>
+            <button id="adminLogout" class="btn-logout hidden">EXIT ADMIN</button>
+        </div>
+        <span class="status">[SYSTEM ACTIVE]</span>
+    </div>
+
+    <div class="divider"></div>
+    <div class="live-wire-container">
+        <div class="live-wire-track" id="liveWireTrack"></div>
+     </div>
+    
+
+    <div class="logo-container">
+        <img src="IMG/IN.COGNITO LOGO.png" alt="LOGO" class="logo">
+    </div>
+
+    <div class="content" id="homeScreen">
+        <p class="warning">YOU ARE NOT SUPPOSED TO BE<br>HERE.</p>
+        <p class="info">This system contains<br>unverified records.</p>
+        <div class="actions">
+            <button class="btn" id="accessBtn">ACCESS ARCHIVE</button>
+            <button class="btn" id="submitBtn">SUBMIT RECORD</button>
+        </div>
+        <div class="log hidden" id="systemLog"></div>
+        <p class="watching">— SYSTEM WATCHING —</p>
+    </div>
+
+    <div class="content hidden" id="submitScreen">
+        <div class="submit-title">SUBMIT EVIDENCE</div>
+        
+        <label class="submit-label">RECORD TITLE</label>
+        <input class="submit-input" id="inTitle" type="text" placeholder="Untitled file">
+
+        <label class="submit-label">CLASSIFICATION</label>
+        <select id="inCategory" class="submit-input" style="background: black; color: #0f0; cursor: pointer;">
+            <option value="ALIEN">EXTRATERRESTRE</option>
+            <option value="PARANORMAL">PARANORMAL</option>
+            <option value="CRYPTID">CRÍPTIDO</option>
+            <option value="SOCIETY">SOCIEDAD SECRETA</option>
+            <option value="URBAN_LEGEND">LEYENDA URBANA</option>
+            <option value="GOVERNMENT">GUBERNAMENTAL</option>
+            <option value="OTHER">DESCONOCIDO</option>
+        </select>
+
+        <label class="submit-label">DESCRIPTION / CONSPIRACY</label>
+        
+        <div class="polygraph-container">
+            <div class="polygraph-header">[SISTEMA DE ANÁLISIS BIOMÉTRICO MK-II]</div>
+            <div class="polygraph-stats">
+                <span>RITMO CARDÍACO: <span id="bpm-readout">72</span> BPM</span>
+                <span>ESTADO: <span id="polygraph-status" class="status-normal">ESTABLE</span></span>
+            </div>
+            <div class="polygraph-bar-bg">
+                <div id="polygraph-bar" class="polygraph-bar-fill"></div>
+            </div>
+            <div id="polygraph-warning" class="polygraph-warning">VIGILANCIA ACTIVA: ESCRIBA SU REPORTE.</div>
+        </div>
+        <textarea class="submit-textarea" id="inDesc" placeholder="Write the record..."></textarea>
+
+        <label class="submit-label">EVIDENCE (PHOTO/IMAGE)</label>
+        <input type="file" id="inImage" accept="image/*" class="submit-input">
+
+        <label class="submit-label">SOURCE / ACCESS KEY (OPTIONAL)</label>
+        <input class="submit-input" id="inSource" type="text" placeholder="Unknown / Anonymous">
+
+        <div class="submit-actions">
+            <button class="btn" id="sendRecordBtn">TRANSMIT</button>
+            <button class="btn" id="cancelBtn">ABORT</button>
+        </div>
+    </div>
+
+    <div class="content hidden" id="archiveScreen">
+        <div class="archive-header">SECURE ARCHIVE</div>
+
+        <div class="search-container">
+            <span class="search-icon">🔎</span>
+            <input type="text" id="deepScanInput" placeholder="DEEP SCAN (TITLE/DESC)..." class="submit-input" style="border:none; margin:0;">
+        </div>
+
+       <div class="category-filters" id="categoryFilters">
+            <button class="filter-btn active" data-cat="ALL">ALL</button>
+            <button class="filter-btn" data-cat="ALIEN">ALIEN</button>
+            <button class="filter-btn" data-cat="PARANORMAL">PARA.</button>
+            <button class="filter-btn" data-cat="CRYPTID">CRYPT.</button>
+            <button class="filter-btn" data-cat="SOCIETY">SOCIEDAD</button>
+            <button class="filter-btn" data-cat="URBAN_LEGEND">LEYENDA</button>
+            <button class="filter-btn" data-cat="GOVERNMENT">GOVT.</button>
+            <button class="filter-btn" data-cat="OTHER">OTHER</button>
+        </div>
+
+        <div id="archiveList" class="archive-list">
+            </div>
+
+        <div class="actions" style="margin-top: 20px;">
+            <button class="btn" id="backBtn">RETURN TO HOME</button>
+        </div>
+    </div>
+
+    <div id="customAlert" class="custom-modal hidden">
+        <div class="modal-content">
+            <div id="alertMsg">SYSTEM MESSAGE</div>
+            <button class="btn small" id="closeAlert">CONTINUE</button>
+        </div>
+    </div>
+
+    <div id="customConfirm" class="custom-modal hidden">
+        <div class="modal-content">
+            <div id="confirmMsg">ARE YOU SURE?</div>
+            <div class="submit-actions">
+                <button class="btn small danger" id="confirmYes">PROCEED</button>
+                <button class="btn small" id="confirmNo">ABORT</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="adminPanel" class="admin-panel hidden">
+    <div class="admin-panel-header">ESTACIÓN DE MONITOREO CENTRAL</div>
+    <div class="admin-stats">
+        <div class="stat-box">
+            <span class="label">REGISTROS EN NUBE</span>
+            <span id="totalRecords" class="value">0</span>
+        </div>
+        <div class="stat-box">
+            <span class="label">ESTADO DE RED</span>
+            <span class="value ok">EN LÍNEA</span>
+        </div>
+    </div>
+    <div class="admin-actions">
+        <button class="btn small danger" id="nukeDatabase">NUKE DATABASE (BORRAR TODO)</button>
+    </div>
+</div>
+
+<template id="cardTemplate">
+    <div class="archive-card" data-open="false">
+        <div class="card-image-container">
+             <img src="" class="evidence-preview hidden">
+             <span class="placeholder-icon">👁</span>
+        </div>
+        <div class="card-content">
+            <div class="card-title"></div>
+            <div class="card-preview"></div>
+            
+            <div class="card-reactions">
+                <button class="react-btn believe-btn" title="PLAUSIBLE">
+                    <span class="icon">👁</span> <span class="count">0</span>
+                </button>
+                <button class="react-btn redacted-btn" title="DISINFORMATION">
+                    <span class="icon">🚫</span> <span class="count">0</span>
+                </button>
+            </div>
+
+            <div class="record-expanded hidden">
+                <img src="" class="full-evidence-img hidden">
+                <p class="full-desc"></p>
+                <p class="record-source"></p>
+                <button class="btn small danger admin-only hidden">PURGE RECORD</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
