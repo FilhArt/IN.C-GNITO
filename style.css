@@ -651,3 +651,49 @@ body {
     50% { border-color: #8b0000; box-shadow: 0 0 15px #ff3b3b; }
     100% { border-color: #ff3b3b; box-shadow: 0 0 5px #ff3b3b; }
 }
+/* =========================================
+   PROTOCOLO MÓVIL (RESPONSIVE DESIGN)
+========================================= */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+        font-size: 14px; /* Letra ligeramente más pequeña */
+    }
+
+    .terminal {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 15px;
+        box-sizing: border-box;
+        border-width: 1px; /* Borde más fino en móvil */
+    }
+
+    /* Los botones principales apilados para ser más fáciles de tocar */
+    .nav-buttons, .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        margin: 5px 0;
+        padding: 12px;
+    }
+
+    /* Ajustar las tarjetas del archivo */
+    .archive-card {
+        padding: 10px;
+    }
+
+    .evidence-preview, .full-evidence-img {
+        max-width: 100%; /* Las imágenes no se saldrán de la pantalla */
+        height: auto;
+    }
+
+    /* Si tienes columnas en tu formulario, que pasen a fila única */
+    input[type="text"], input[type="file"], select, textarea {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
