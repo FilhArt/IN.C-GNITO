@@ -697,3 +697,31 @@ body {
         box-sizing: border-box;
     }
 }
+
+/* =========================
+   BOOT SCREEN (BIOS)
+========================= */
+.boot-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #030303;
+    color: #0f0;
+    font-family: monospace;
+    font-size: 14px;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.boot-screen.hidden {
+    display: none;
+}
+
+.boot-text div {
+    margin-bottom: 4px;
+    text-shadow: 0 0 4px #0f0;
+}

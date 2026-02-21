@@ -202,22 +202,33 @@ async function handleNewSubmission() {
     }
 
     let imageData = null;
-    if (fileInput.files[0]) imageData = await imageToBase64(fileInput.files[0]);
+    if (fileInput.files && fileInput.files[0]) {
+        imageData = await imageToBase64(fileInput.files[0]);
+    }
 
-    // SISTEMA DE EDICIÓN
     if (editingRecordId) {
+        
         const updates = {
             title: title,
-            category: category,
+            category: category || "OTHER",
             description: desc,
-            source: source || "ANONYMOUS",
-            // Conserva la imagen vieja si no subió una nueva
-            image: imageData ? imageData : currentEditingImage 
+            source: source || "ANONYMOUS"
         };
-        db.ref("records/" + editingRecordId).update(updates);
-        await terminalAlert("TRANSMISSION UPDATED.");
+        
+        
+        if (imageData) {
+            updates.image = imageData;
+        }
+
+        try {
+            await db.ref("records/" + editingRecordId).update(updates);
+            await terminalAlert("TRANSMISSION UPDATED.");
+        } catch (error) {
+            console.error("Transmission error:", error);
+            await terminalAlert("ERROR DE CONEXIÓN AL ACTUALIZAR.");
+        }
     } else {
-        // SISTEMA DE CREACIÓN NUEVA
+        
         const newRecord = {
             title,
             category: category || "OTHER",
@@ -226,7 +237,7 @@ async function handleNewSubmission() {
             image: imageData || null,
             reactions: { believe: 0, redacted: 0 },
             timestamp: Date.now(),
-            ownerToken: MY_AGENT_TOKEN // Guarda el Token del dueño
+            ownerToken: MY_AGENT_TOKEN 
         };
         db.ref("records").push(newRecord);
     }
@@ -495,8 +506,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
 const wireMessages = [
     "INTERCEPTACIÓN SECTOR 4: ANOMALÍA MAGNÉTICA DETECTADA",
+
     "SAT-COM LINK ESTABLISHED... DOWNLOADING TELEMETRY",
     "UNAUTHORIZED ACCESS DETECTED IN SECTOR 7G",
     "WARNING: CONTAINMENT BREACH AT SITE-19. DEPLOYING MTF.",
@@ -551,6 +564,178 @@ function initLiveWire() {
     wireTrack.innerHTML = messageString + messageString;
 }
 
+/* =========================
+   PROTOCOLO BILINGÜE
+========================= */
+
+let currentLang = localStorage.getItem("terminal_lang") || "ES"; 
+
+const translations = {
+    ES: {
+        lang_btn: "[ LANG: ES ]",
+        system_status: "[ SISTEMA ACTIVO ]",
+        btn_admin_logout: "SALIR ADMIN",
+        home_warning: "NO DEBERÍAS ESTAR<br>AQUÍ.",
+        home_info: "Este sistema contiene<br>archivos sin verificar.",
+        nav_archive: "ACCEDER AL ARCHIVO",
+        nav_submit: "SUBIR REPORTE",
+        home_watching: "— SISTEMA OBSERVANDO —",
+        form_main_title: "SUBIR EVIDENCIA",
+        form_lbl_title: "TÍTULO DEL REPORTE",
+        form_ph_title: "Archivo sin título",
+        form_lbl_cat: "CLASIFICACIÓN",
+        cat_alien: "EXTRATERRESTRE",
+        cat_para: "PARANORMAL",
+        cat_cryptid: "CRÍPTIDO",
+        cat_society: "SOCIEDAD SECRETA",
+        cat_urban: "LEYENDA URBANA",
+        cat_govt: "GUBERNAMENTAL",
+        cat_other: "DESCONOCIDO",
+        form_lbl_desc: "DESCRIPCIÓN / CONSPIRACIÓN",
+        polygraph_warning: "VIGILANCIA ACTIVA: ESCRIBA SU REPORTE.",
+        form_ph_desc: "Escriba el reporte aquí...",
+        form_lbl_img: "EVIDENCIA (FOTO/IMAGEN)",
+        form_lbl_source: "FUENTE / CLAVE (OPCIONAL)",
+        form_ph_source: "Desconocido / Anónimo",
+        btn_submit: "TRANSMITIR",
+        btn_abort: "ABORTAR",
+        archive_title: "ARCHIVO SEGURO",
+        ph_search: "BÚSQUEDA PROFUNDA...",
+        filter_all: "TODO",
+        cat_society_short: "SOCIEDAD",
+        cat_urban_short: "LEYENDA",
+        cat_other_short: "OTRO",
+        btn_return: "VOLVER AL INICIO",
+        btn_edit: "EDITAR REPORTE",
+        btn_delete: "ELIMINAR REPORTE",
+        alert_continue: "CONTINUAR",
+        confirm_sure: "¿ESTÁS SEGURO?",
+        confirm_yes: "PROCEDER",
+        confirm_no: "ABORTAR"
+    },
+    EN: {
+        lang_btn: "[ LANG: EN ]",
+        system_status: "[ SYSTEM ACTIVE ]",
+        btn_admin_logout: "EXIT ADMIN",
+        home_warning: "YOU ARE NOT SUPPOSED TO BE<br>HERE.",
+        home_info: "This system contains<br>unverified records.",
+        nav_archive: "ACCESS ARCHIVE",
+        nav_submit: "SUBMIT RECORD",
+        home_watching: "— SYSTEM WATCHING —",
+        form_main_title: "SUBMIT EVIDENCE",
+        form_lbl_title: "RECORD TITLE",
+        form_ph_title: "Untitled file",
+        form_lbl_cat: "CLASSIFICATION",
+        cat_alien: "EXTRATERRESTRIAL",
+        cat_para: "PARANORMAL",
+        cat_cryptid: "CRYPTID",
+        cat_society: "SECRET SOCIETY",
+        cat_urban: "URBAN LEGEND",
+        cat_govt: "GOVERNMENT",
+        cat_other: "UNKNOWN",
+        form_lbl_desc: "DESCRIPTION / CONSPIRACY",
+        polygraph_warning: "ACTIVE SURVEILLANCE: WRITE YOUR REPORT.",
+        form_ph_desc: "Write the record...",
+        form_lbl_img: "EVIDENCE (PHOTO/IMAGE)",
+        form_lbl_source: "SOURCE / ACCESS KEY (OPTIONAL)",
+        form_ph_source: "Unknown / Anonymous",
+        btn_submit: "TRANSMIT",
+        btn_abort: "ABORT",
+        archive_title: "SECURE ARCHIVE",
+        ph_search: "DEEP SCAN...",
+        filter_all: "ALL",
+        cat_society_short: "SOCIETY",
+        cat_urban_short: "LEGEND",
+        cat_other_short: "OTHER",
+        btn_return: "RETURN TO HOME",
+        btn_edit: "EDIT RECORD",
+        btn_delete: "DELETE RECORD",
+        alert_continue: "CONTINUE",
+        confirm_sure: "ARE YOU SURE?",
+        confirm_yes: "PROCEED",
+        confirm_no: "ABORT"
+    }
+};
+
+function switchLanguage() {
+    currentLang = (currentLang === "ES") ? "EN" : "ES";
+    localStorage.setItem("terminal_lang", currentLang);
+    applyTranslations();
+}
+
+function applyTranslations() {
+    const langBtn = document.getElementById("langToggle");
+    if (langBtn) {
+        langBtn.innerText = translations[currentLang].lang_btn;
+    }
+
+    const elements = document.querySelectorAll("[data-i18n]");
+    elements.forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (translations[currentLang][key]) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                el.placeholder = translations[currentLang][key];
+            } else {
+                el.innerHTML = translations[currentLang][key];
+            }
+        }
+    });
+}
+/* =========================
+   SECUENCIA DE ARRANQUE (BIOS)
+========================= */
+const bootLines = [
+    "BIOS Date 10/24/85 14:22:34 Ver 08.00.02",
+    "CPU: MK-ULTRA PROCESSOR, Speed: 8.5 MHz",
+    "Memory Test: 640K OK",
+    " ",
+    "Initializing secure connection...",
+    "Establishing SAT-COM link... OK",
+    "Bypassing public relays... OK",
+    "Decrypting payload... OK",
+    "Loading IN.CÓGNITO Core Modules...",
+    "Checking local biometric sensors... DETECTED",
+    "Mounting shadow database...",
+    " ",
+    "WARNING: UNAUTHORIZED ACCESS LOGGED.",
+    "INITIATING SYSTEM..."
+];
+
+function runBootSequence() {
+    const bootScreen = document.getElementById("bootScreen");
+    const bootText = document.getElementById("bootText");
+    
+    
+    if (sessionStorage.getItem("system_booted")) {
+        bootScreen.classList.add("hidden");
+        return;
+    }
+
+    let i = 0;
+    const bootInterval = setInterval(() => {
+        if (i < bootLines.length) {
+            const p = document.createElement("div");
+            p.textContent = bootLines[i];
+            bootText.appendChild(p);
+            
+            
+            bootScreen.scrollTop = bootScreen.scrollHeight;
+            i++;
+        } else {
+            clearInterval(bootInterval);
+            
+            setTimeout(() => {
+                bootScreen.classList.add("hidden");
+                sessionStorage.setItem("system_booted", "true");
+            }, 1200);
+        }
+    }, 120);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    applyTranslations();
+    runBootSequence();
+});
 /* =========================
     EVENT BINDING & INIT
 ========================= */

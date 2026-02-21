@@ -9,13 +9,20 @@
 </head>
 <body>
 
+<div id="bootScreen" class="boot-screen">
+    <div id="bootText" class="boot-text"></div>
+</div>
+    
 <div class="terminal">
     <div class="header">
         <div class="header-left">
             <span class="title">IN.CÓGNITO</span>
-            <button id="adminLogout" class="btn-logout hidden">EXIT ADMIN</button>
+            <button id="adminLogout" class="btn-logout hidden" data-i18n="btn_admin_logout">EXIT ADMIN</button>
         </div>
-        <span class="status">[SYSTEM ACTIVE]</span>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="langToggle" onclick="switchLanguage()" style="background: transparent; border: 1px solid #0f0; color: #0f0; padding: 2px 8px; font-family: monospace; cursor:pointer;" data-i18n="lang_btn">[ LANG: ES ]</button>
+            <span class="status" data-i18n="system_status">[SYSTEM ACTIVE]</span>
+        </div>
     </div>
 
     <div class="divider"></div>
@@ -23,40 +30,39 @@
         <div class="live-wire-track" id="liveWireTrack"></div>
      </div>
     
-
     <div class="logo-container">
         <img src="IMG/IN.COGNITO LOGO.png" alt="LOGO" class="logo">
     </div>
 
     <div class="content" id="homeScreen">
-        <p class="warning">YOU ARE NOT SUPPOSED TO BE<br>HERE.</p>
-        <p class="info">This system contains<br>unverified records.</p>
+        <p class="warning" data-i18n="home_warning">YOU ARE NOT SUPPOSED TO BE HERE.</p>
+        <p class="info" data-i18n="home_info">This system contains unverified records.</p>
         <div class="actions">
-            <button class="btn" id="accessBtn">ACCESS ARCHIVE</button>
-            <button class="btn" id="submitBtn">SUBMIT RECORD</button>
+            <button class="btn" id="accessBtn" data-i18n="nav_archive">ACCESS ARCHIVE</button>
+            <button class="btn" id="submitBtn" data-i18n="nav_submit">SUBMIT RECORD</button>
         </div>
         <div class="log hidden" id="systemLog"></div>
-        <p class="watching">— SYSTEM WATCHING —</p>
+        <p class="watching" data-i18n="home_watching">— SYSTEM WATCHING —</p>
     </div>
 
     <div class="content hidden" id="submitScreen">
-        <div class="submit-title">SUBMIT EVIDENCE</div>
+        <div class="submit-title" data-i18n="form_main_title">SUBMIT EVIDENCE</div>
         
-        <label class="submit-label">RECORD TITLE</label>
-        <input class="submit-input" id="inTitle" type="text" placeholder="Untitled file">
+        <label class="submit-label" data-i18n="form_lbl_title">RECORD TITLE</label>
+        <input class="submit-input" id="inTitle" type="text" placeholder="Untitled file" data-i18n="form_ph_title">
 
-        <label class="submit-label">CLASSIFICATION</label>
+        <label class="submit-label" data-i18n="form_lbl_cat">CLASSIFICATION</label>
         <select id="inCategory" class="submit-input" style="background: black; color: #0f0; cursor: pointer;">
-            <option value="ALIEN">EXTRATERRESTRE</option>
-            <option value="PARANORMAL">PARANORMAL</option>
-            <option value="CRYPTID">CRÍPTIDO</option>
-            <option value="SOCIETY">SOCIEDAD SECRETA</option>
-            <option value="URBAN_LEGEND">LEYENDA URBANA</option>
-            <option value="GOVERNMENT">GUBERNAMENTAL</option>
-            <option value="OTHER">DESCONOCIDO</option>
+            <option value="ALIEN" data-i18n="cat_alien">EXTRATERRESTRE</option>
+            <option value="PARANORMAL" data-i18n="cat_para">PARANORMAL</option>
+            <option value="CRYPTID" data-i18n="cat_cryptid">CRÍPTIDO</option>
+            <option value="SOCIETY" data-i18n="cat_society">SOCIEDAD SECRETA</option>
+            <option value="URBAN_LEGEND" data-i18n="cat_urban">LEYENDA URBANA</option>
+            <option value="GOVERNMENT" data-i18n="cat_govt">GUBERNAMENTAL</option>
+            <option value="OTHER" data-i18n="cat_other">DESCONOCIDO</option>
         </select>
 
-        <label class="submit-label">DESCRIPTION / CONSPIRACY</label>
+        <label class="submit-label" data-i18n="form_lbl_desc">DESCRIPTION / CONSPIRACY</label>
         
         <div class="polygraph-container">
             <div class="polygraph-header">[SISTEMA DE ANÁLISIS BIOMÉTRICO MK-II]</div>
@@ -67,62 +73,62 @@
             <div class="polygraph-bar-bg">
                 <div id="polygraph-bar" class="polygraph-bar-fill"></div>
             </div>
-            <div id="polygraph-warning" class="polygraph-warning">VIGILANCIA ACTIVA: ESCRIBA SU REPORTE.</div>
+            <div id="polygraph-warning" class="polygraph-warning" data-i18n="polygraph_warning">VIGILANCIA ACTIVA: ESCRIBA SU REPORTE.</div>
         </div>
-        <textarea class="submit-textarea" id="inDesc" placeholder="Write the record..."></textarea>
+        <textarea class="submit-textarea" id="inDesc" placeholder="Write the record..." data-i18n="form_ph_desc"></textarea>
 
-        <label class="submit-label">EVIDENCE (PHOTO/IMAGE)</label>
+        <label class="submit-label" data-i18n="form_lbl_img">EVIDENCE (PHOTO/IMAGE)</label>
         <input type="file" id="inImage" accept="image/*" class="submit-input">
 
-        <label class="submit-label">SOURCE / ACCESS KEY (OPTIONAL)</label>
-        <input class="submit-input" id="inSource" type="text" placeholder="Unknown / Anonymous">
+        <label class="submit-label" data-i18n="form_lbl_source">SOURCE / ACCESS KEY (OPTIONAL)</label>
+        <input class="submit-input" id="inSource" type="text" placeholder="Unknown / Anonymous" data-i18n="form_ph_source">
 
         <div class="submit-actions">
-            <button class="btn" id="sendRecordBtn">TRANSMIT</button>
-            <button class="btn" id="cancelBtn">ABORT</button>
+            <button class="btn" id="sendRecordBtn" data-i18n="btn_submit">TRANSMIT</button>
+            <button class="btn" id="cancelBtn" data-i18n="btn_abort">ABORT</button>
         </div>
     </div>
 
     <div class="content hidden" id="archiveScreen">
-        <div class="archive-header">SECURE ARCHIVE</div>
+        <div class="archive-header" data-i18n="archive_title">SECURE ARCHIVE</div>
 
         <div class="search-container">
             <span class="search-icon">🔎</span>
-            <input type="text" id="deepScanInput" placeholder="DEEP SCAN (TITLE/DESC)..." class="submit-input" style="border:none; margin:0;">
+            <input type="text" id="deepScanInput" placeholder="DEEP SCAN (TITLE/DESC)..." class="submit-input" style="border:none; margin:0;" data-i18n="ph_search">
         </div>
 
        <div class="category-filters" id="categoryFilters">
-            <button class="filter-btn active" data-cat="ALL">ALL</button>
+            <button class="filter-btn active" data-cat="ALL" data-i18n="filter_all">ALL</button>
             <button class="filter-btn" data-cat="ALIEN">ALIEN</button>
             <button class="filter-btn" data-cat="PARANORMAL">PARA.</button>
             <button class="filter-btn" data-cat="CRYPTID">CRYPT.</button>
-            <button class="filter-btn" data-cat="SOCIETY">SOCIEDAD</button>
-            <button class="filter-btn" data-cat="URBAN_LEGEND">LEYENDA</button>
+            <button class="filter-btn" data-cat="SOCIETY" data-i18n="cat_society_short">SOCIEDAD</button>
+            <button class="filter-btn" data-cat="URBAN_LEGEND" data-i18n="cat_urban_short">LEYENDA</button>
             <button class="filter-btn" data-cat="GOVERNMENT">GOVT.</button>
-            <button class="filter-btn" data-cat="OTHER">OTHER</button>
+            <button class="filter-btn" data-cat="OTHER" data-i18n="cat_other_short">OTHER</button>
         </div>
 
         <div id="archiveList" class="archive-list">
             </div>
 
         <div class="actions" style="margin-top: 20px;">
-            <button class="btn" id="backBtn">RETURN TO HOME</button>
+            <button class="btn" id="backBtn" data-i18n="btn_return">RETURN TO HOME</button>
         </div>
     </div>
 
     <div id="customAlert" class="custom-modal hidden">
         <div class="modal-content">
             <div id="alertMsg">SYSTEM MESSAGE</div>
-            <button class="btn small" id="closeAlert">CONTINUE</button>
+            <button class="btn small" id="closeAlert" data-i18n="alert_continue">CONTINUE</button>
         </div>
     </div>
 
     <div id="customConfirm" class="custom-modal hidden">
         <div class="modal-content">
-            <div id="confirmMsg">ARE YOU SURE?</div>
+            <div id="confirmMsg" data-i18n="confirm_sure">ARE YOU SURE?</div>
             <div class="submit-actions">
-                <button class="btn small danger" id="confirmYes">PROCEED</button>
-                <button class="btn small" id="confirmNo">ABORT</button>
+                <button class="btn small danger" id="confirmYes" data-i18n="confirm_yes">PROCEED</button>
+                <button class="btn small" id="confirmNo" data-i18n="confirm_no">ABORT</button>
             </div>
         </div>
     </div>
@@ -169,8 +175,8 @@
                 <p class="record-source"></p>
                 
                 <div class="user-actions hidden" style="margin-top: 15px; border-top: 1px dashed #0f0; padding-top: 10px;">
-                    <button class="btn small edit-btn">EDIT RECORD</button>
-                    <button class="btn small danger delete-btn">DELETE RECORD</button>
+                    <button class="btn small edit-btn" data-i18n="btn_edit">EDIT RECORD</button>
+                    <button class="btn small danger delete-btn" data-i18n="btn_delete">DELETE RECORD</button>
                 </div>
 
                 <button class="btn small danger admin-only hidden" style="margin-top: 10px;">[ADMIN] PURGE RECORD</button>
